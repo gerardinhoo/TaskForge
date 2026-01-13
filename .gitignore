@@ -1,0 +1,38 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.pkl
+*.log
+
+# ---- Virtualenv ----
+.venv/
+env/
+venv/
+
+# ---- IDE/Editor Noise ----
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# ---- Python packaging ----
+build/
+dist/
+*.egg-info/
+
+# ---- Local env files ----
+.env
+.env.*
+*.local
+
+# ---- Coverage/test ----
+.coverage
+htmlcov/
+.cache/
+pytest.cache/
+
+# ---- Poetry/Pipenv (if used later)
+*.lock
