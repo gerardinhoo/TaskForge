@@ -26,6 +26,15 @@ def db_health():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {e}")
 
+@app.get("/tags", response_model=list[schemas.Tag])
+def list_tags(db: Session = Depends(get_db)):
+    """
+    List all tags.
+    """
+    tags = db.query(models.Tag).order_by(models.Tag.name.asc()).all()
+    return tags
+
+
 @app.post("/tags", response_model=schemas.Tag, status_code=201)
 def create_tag(payload: schemas.TagCreate, db: Session = Depends(get_db)):
     """
