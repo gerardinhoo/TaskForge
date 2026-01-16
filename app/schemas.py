@@ -30,7 +30,15 @@ class TaskBase(BaseModel):
 class TaskCreate(TaskBase):
     """Payload when creating a new task."""
     tag_ids: List[int] = []
-    
+
+class TaskUpdate(BaseModel):
+    """Payload when updating an existing task."""
+    title: Optional[str] = None
+    description: Optional[str] = None
+    status: Optional[str] = None
+    due_date: Optional[datetime] = None
+    tag_ids: Optional[List[int]] = None
+
 class Task(TaskBase):
     id: int
     created_at: datetime

@@ -1,6 +1,6 @@
-from typing import List
+from typing import List, Optional
 
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Query
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
@@ -67,12 +67,73 @@ def create_task(payload: schemas.TaskCreate, db: Session = Depends(get_db)):
     db.refresh(task)
     return task
 
+@app.put("/tasks/{task_id}", response_model=schemas.Task)
+def update_task(
+    task_id: int,
+    payload: schemas.TaskUpdate,
+    db: Session = Depends(get_db),
+):
+    """
+    Update an existing task. Only fields provided will be updated.
+    """
+    task = db.query(models.Task).filter(models.Task.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    # Update simple fields if provided
+    if payload.title is not None:
+        task.title = payload.title
+    if payload.description is not None:
+        task.description = payload.description
+    if payload.status is not None:
+        task.status = payload.status
+    if payload.due_date is not None:
+        task.due_date = payload.due_date
+
+    # Update tags if tag_ids provided
+    if payload.tag_ids is not None:
+        if len(payload.tag_ids) == 0:
+            # Clear tags if empty list
+            task.tags = []
+        else:
+            tags = db.query(models.Tag).filter(models.Tag.id.in_(payload.tag_ids)).all()
+            if len(tags) != len(payload.tag_ids):
+                raise HTTPException(status_code=400, detail="One or more tags not found")
+            task.tags = tags
+
+    db.commit()
+    db.refresh(task)
+    return task
+
+@app.delete("/tasks/{task_id}", status_code=204)
+def delete_task(task_id: int, db: Session = Depends(get_db)):
+    """
+    Delete an existing task.
+    """
+    task = db.query(models.Task).filter(models.Task.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    db.delete(task)
+    db.commit()
+    return
 
 @app.get("/tasks", response_model=List[schemas.Task])
-def list_tasks(db: Session = Depends(get_db)):
+def list_tasks(
+    status: Optional[str] = Query(None, description="Filter by status"),
+    tag_id: Optional[int] = Query(None, description="Filter by tag id"),
+    db: Session = Depends(get_db),
+):
     """
-    Temporary basic GET endpoint.
-    Returns all tasks from the database.
+    List tasks with optional filtering by status and tag.
     """
-    tasks = db.query(models.Task).order_by(models.Task.created_at.desc()).all()
+    query = db.query(models.Task)
+
+    if status:
+        query = query.filter(models.Task.status == status)
+
+    if tag_id:
+        query = query.join(models.Task.tags).filter(models.Tag.id == tag_id)
+
+    tasks = query.order_by(models.Task.created_at.desc()).all()
     return tasks
