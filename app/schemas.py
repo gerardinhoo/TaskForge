@@ -8,6 +8,10 @@ from pydantic import BaseModel
 class TagBase(BaseModel):
     name: str
 
+class TagCreate(TagBase):
+    """Payload when creating a new tag."""
+    pass
+
 
 class Tag(TagBase):
     id: int
@@ -23,7 +27,10 @@ class TaskBase(BaseModel):
     status: str
     due_date: Optional[datetime] = None
 
-
+class TaskCreate(TaskBase):
+    """Payload when creating a new task."""
+    tag_ids: List[int] = []
+    
 class Task(TaskBase):
     id: int
     created_at: datetime
