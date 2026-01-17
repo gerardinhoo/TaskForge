@@ -1,35 +1,41 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Routes, Route, Link } from "react-router-dom";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+function Home() {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
+    <div className="p-6">
+      <h1 className="text-2xl font-bold">TaskForge</h1>
+      <p className="mt-2 text-gray-600">
+        Frontend is running. Next: connect to FastAPI.
       </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+function TasksPage() {
+  return (
+    <div className="p-6">
+      <h2 className="text-xl font-semibold">Tasks</h2>
+      <p className="mt-2 text-gray-600">Coming next…</p>
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <div>
+      <nav className="flex gap-4 border-b p-4">
+        <Link className="text-blue-600 hover:underline" to="/">
+          Home
+        </Link>
+        <Link className="text-blue-600 hover:underline" to="/tasks">
+          Tasks
+        </Link>
+      </nav>
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/tasks" element={<TasksPage />} />
+      </Routes>
+    </div>
+  );
+}
