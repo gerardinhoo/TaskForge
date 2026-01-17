@@ -1,8 +1,9 @@
 import { Routes, Route, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { api } from "./lib/api";
 import type { Task } from "./types/task";
 import toast from "react-hot-toast";
+import { createTask, getTasks } from './lib/tasks';
+
 
 function Home() {
   return (
@@ -18,28 +19,120 @@ function Home() {
 function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+
+  const [title, setTitle] = useState("");
+  const [status, setStatus] = useState<"pending" | "in_progress" | "completed">(
+    "pending"
+  );
+  const [description, setDescription] = useState("");
+
+  async function loadTasks() {
+    try {
+      setLoading(true);
+      const data = await getTasks();
+      setTasks(data);
+    } catch {
+      toast.error("Failed to load tasks");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    api
-      .get<Task[]>("/tasks")
-      .then((res) => {
-        setTasks(res.data);
-      })
-      .catch(() => {
-        toast.error("Failed to load tasks");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    loadTasks();
   }, []);
 
-  if (loading) return <p>Loading tasks…</p>;
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    if (!title.trim()) {
+      toast.error("Title is required");
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+
+      await createTask({
+        title: title.trim(),
+        status,
+        description: description.trim() ? description.trim() : undefined,
+        due_date: null,
+        tag_ids: [],
+      });
+
+      toast.success("Task created");
+
+      // Reset form
+      setTitle("");
+      setDescription("");
+      setStatus("pending");
+
+      // Refresh list
+      await loadTasks();
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.detail || "Failed to create task";
+      toast.error(msg);
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <div>
-      <h2 className="text-xl font-semibold">Tasks</h2>
+      <h2>Tasks</h2>
 
-      {tasks.length === 0 ? (
+      <form onSubmit={onSubmit}>
+        <div>
+          <label>
+            Title
+            <input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="e.g. Add Dockerfile for backend"
+            />
+          </label>
+        </div>
+
+        <div>
+          <label>
+            Status
+            <select
+              value={status}
+              onChange={(e) =>
+                setStatus(e.target.value as "pending" | "in_progress" | "completed")
+              }
+            >
+              <option value="pending">pending</option>
+              <option value="in_progress">in_progress</option>
+              <option value="completed">completed</option>
+            </select>
+          </label>
+        </div>
+
+        <div>
+          <label>
+            Description (optional)
+            <input
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="optional"
+            />
+          </label>
+        </div>
+
+        <button type="submit" disabled={submitting}>
+          {submitting ? "Creating..." : "Create Task"}
+        </button>
+      </form>
+
+      <hr />
+
+      {loading ? (
+        <p>Loading tasks…</p>
+      ) : tasks.length === 0 ? (
         <p>No tasks found.</p>
       ) : (
         <ul>
