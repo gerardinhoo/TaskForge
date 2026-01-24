@@ -5,10 +5,6 @@ pipeline {
     timestamps()
   }
 
-  environment {
-    // Jenkins will run docker compose from the repo workspace.
-    // run tests in Docker using your backend-tests service.
-  }
 
   stages {
     stage('Checkout') {
