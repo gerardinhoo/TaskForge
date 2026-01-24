@@ -1,0 +1,18 @@
+services:
+  jenkins:
+    image: jenkins/jenkins:lts-jdk17
+    container_name: taskforge-jenkins
+    user: root
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      # Allow Jenkins to run Docker commands on Mac via Docker Desktop socket
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=true
+    restart: unless-stopped
+
+volumes:
+  jenkins_home:
