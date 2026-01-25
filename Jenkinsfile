@@ -7,15 +7,9 @@ pipeline {
 
 
   stages {
-    stage('Checkout') {
-      steps {
-        checkout scm
-      }
-    }
-
     stage('Backend Tests (Docker)') {
       steps {
-        sh 'docker compose run --rm backend-tests'
+        sh 'docker compose -f docker-compose.ci.yml up --build --abort-on-container-exit'
       }
     }
 
@@ -30,14 +24,14 @@ pipeline {
 
     stage('Build Images') {
       steps {
-        sh 'docker compose build'
+        sh 'docker compose -f docker-compose.ci.yml build'
       }
     }
   }
 
   post {
     always {
-      sh 'docker compose down --remove-orphans || true'
+      sh 'docker compose -f docker-compose.ci.yml down -v --remove-orphans || true'
     }
   }
 }
