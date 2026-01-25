@@ -20,15 +20,22 @@ pipeline {
     steps {
         withSonarQubeEnv('sonarqube-local') {
             sh '''
-              docker run --rm \
-                --network taskforge_default \
-                -e SONAR_HOST_URL="$SONAR_HOST_URL" \
-                -e SONAR_TOKEN="$SONAR_AUTH_TOKEN" \
-                -v "$WORKSPACE:/usr/src" \
-                sonarsource/sonar-scanner-cli:latest \
-                -Dsonar.projectKey=taskForge \
-                -Dsonar.sources=app \
-                -Dsonar.python.coverage.reportPaths=coverage.xml
+                set -e
+                echo "Workspace: $WORKSPACE"
+                ls -la || true
+                ls -la coverage.xml || true
+
+                docker run --rm \
+                  -e SONAR_HOST_URL="http://host.docker.internal:9000" \
+                  -e SONAR_TOKEN="$SONAR_AUTH_TOKEN" \
+                  -v "$WORKSPACE:/usr/src" \
+                  sonarsource/sonar-scanner-cli:latest \
+                  -Dsonar.projectKey=taskForge \
+                  -Dsonar.sources=app \
+                  -Dsonar.python.coverage.reportPaths=coverage.xml
+
+                echo "---- report-task.txt (if generated) ----"
+                find . -maxdepth 3 -type f -name report-task.txt -print -exec cat {} \\; || true
                   '''
         }
     }
