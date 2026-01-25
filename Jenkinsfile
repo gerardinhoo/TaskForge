@@ -13,6 +13,30 @@ pipeline {
       }
     }
 
+    stage('SonarQube Analysis') {
+    environment {
+        SONAR_SCANNER_OPTS = "-Xmx512m"
+    }
+    steps {
+        withSonarQubeEnv('sonarqube') {
+            sh '''
+              sonar-scanner \
+                -Dsonar.projectKey=taskForge \
+                -Dsonar.sources=app \
+                -Dsonar.python.coverage.reportPaths=coverage.xml
+            '''
+        }
+    }
+}
+
+    stage('Quality Gate') {
+        steps {
+            timeout(time: 2, unit: 'MINUTES') {
+                waitForQualityGate abortPipeline: true
+            }
+        }
+    }
+
     stage('Frontend Build') {
       steps {
         dir('frontend') {
