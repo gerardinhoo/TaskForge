@@ -5,7 +5,6 @@ pipeline {
     timestamps()
   }
 
-
   stages {
     stage('Backend Tests (Docker)') {
       steps {
@@ -26,8 +25,8 @@ pipeline {
           "
         '''
       }
-}
-
+    }
+  
     stage('SonarQube Analysis') {
       steps {
         withSonarQubeEnv('sonarqube-local') {
@@ -55,9 +54,8 @@ pipeline {
           '''
         }
       }
-}
 
-}
+    }
 
     stage('Quality Gate') {
         steps {
@@ -89,3 +87,4 @@ pipeline {
     }
   }
 }
+
