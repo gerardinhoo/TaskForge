@@ -20,11 +20,16 @@ pipeline {
     steps {
         withSonarQubeEnv('sonarqube-local') {
             sh '''
-              sonar-scanner \
+              docker run --rm \
+                --network taskforge_default \
+                -e SONAR_HOST_URL="$SONAR_HOST_URL" \
+                -e SONAR_TOKEN="$SONAR_AUTH_TOKEN" \
+                -v "$WORKSPACE:/usr/src" \
+                sonarsource/sonar-scanner-cli:latest \
                 -Dsonar.projectKey=taskForge \
                 -Dsonar.sources=app \
                 -Dsonar.python.coverage.reportPaths=coverage.xml
-            '''
+                  '''
         }
     }
 }
