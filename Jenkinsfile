@@ -13,32 +13,50 @@ pipeline {
       }
     }
 
+    stage('Sonar Connectivity Check') {
+      steps {
+        sh '''
+          set -x
+          docker run --rm alpine sh -lc "
+            apk add --no-cache curl >/dev/null
+            echo 'Hitting SonarQube...'
+            curl -s -o /dev/null -w 'HTTP=%{http_code}\\n' http://host.docker.internal:9000/api/system/status
+            echo
+            curl -s http://host.docker.internal:9000/api/system/status
+          "
+        '''
+      }
+}
+
     stage('SonarQube Analysis') {
-    environment {
-        SONAR_SCANNER_OPTS = "-Xmx512m"
-    }
-    steps {
+      steps {
         withSonarQubeEnv('sonarqube-local') {
-            sh '''
-                set -e
-                echo "Workspace: $WORKSPACE"
-                ls -la || true
-                ls -la coverage.xml || true
+          sh '''
+            set -x
+            echo "SONAR_HOST_URL=$SONAR_HOST_URL"
+            echo "WORKSPACE=$WORKSPACE"
+            ls -la
+            ls -la coverage.xml || true
 
-                docker run --rm \
-                  -e SONAR_HOST_URL="http://host.docker.internal:9000" \
-                  -e SONAR_TOKEN="$SONAR_AUTH_TOKEN" \
-                  -v "$WORKSPACE:/usr/src" \
-                  sonarsource/sonar-scanner-cli:latest \
-                  -Dsonar.projectKey=taskForge \
-                  -Dsonar.sources=app \
-                  -Dsonar.python.coverage.reportPaths=coverage.xml
+            docker run --rm \
+              -e SONAR_HOST_URL="$SONAR_HOST_URL" \
+              -e SONAR_TOKEN="$SONAR_AUTH_TOKEN" \
+              -v "$WORKSPACE:/usr/src" \
+              sonarsource/sonar-scanner-cli:latest \
+              -Dsonar.projectKey=taskForge \
+              -Dsonar.sources=app \
+              -Dsonar.python.coverage.reportPaths=coverage.xml \
+              -X
 
-                echo "---- report-task.txt (if generated) ----"
-                find . -maxdepth 3 -type f -name report-task.txt -print -exec cat {} \\; || true
-                  '''
+            echo "---- scanner output file check ----"
+            ls -la .scannerwork || true
+            ls -la .scannerwork/report-task.txt || true
+            cat .scannerwork/report-task.txt || true
+          '''
         }
-    }
+      }
+}
+
 }
 
     stage('Quality Gate') {
