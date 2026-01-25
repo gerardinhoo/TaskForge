@@ -31,30 +31,16 @@ pipeline {
       steps {
         withSonarQubeEnv('sonarqube-local') {
           sh '''
-            set -x
-            echo "SONAR_HOST_URL=$SONAR_HOST_URL"
-            echo "WORKSPACE=$WORKSPACE"
-            ls -la
-            ls -la coverage.xml || true
-
             docker run --rm \
-              -e SONAR_HOST_URL="$SONAR_HOST_URL" \
-              -e SONAR_TOKEN="$SONAR_AUTH_TOKEN" \
-              -v "$WORKSPACE:/usr/src" \
-              sonarsource/sonar-scanner-cli:latest \
-              -Dsonar.projectKey=taskForge \
+              --network taskforge_default \
+              -v "$PWD:/usr/src" \
+              sonarsource/sonar-scanner-cli \
+              -Dsonar.projectKey=taskforge \
               -Dsonar.sources=app \
-              -Dsonar.python.coverage.reportPaths=coverage.xml \
-              -X
-
-            echo "---- scanner output file check ----"
-            ls -la .scannerwork || true
-            ls -la .scannerwork/report-task.txt || true
-            cat .scannerwork/report-task.txt || true
+              -Dsonar.python.coverage.reportPaths=coverage.xml
           '''
         }
       }
-
     }
 
     stage('Quality Gate') {
