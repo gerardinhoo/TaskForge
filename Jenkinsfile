@@ -18,7 +18,7 @@ pipeline {
         SONAR_SCANNER_OPTS = "-Xmx512m"
     }
     steps {
-        withSonarQubeEnv('sonarqube') {
+        withSonarQubeEnv('sonarqube-local') {
             sh '''
               sonar-scanner \
                 -Dsonar.projectKey=taskForge \
