@@ -27,29 +27,30 @@ pipeline {
       }
     }
 
-   stage('SonarQube Analysis') {
-      steps {
-        withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-          sh '''
-            set -eux
-            echo "PWD=$PWD"
-            ls -la
-            test -d app
-            test -f coverage.xml
-            docker run --rm \
-              --network taskforge_default \
-              -e SONAR_TOKEN="$SONAR_TOKEN" \
-              -v "$PWD:/usr/src" \
-              -w /usr/src \
-              sonarsource/sonar-scanner-cli \
-              -Dsonar.projectKey=taskforge \
-              -Dsonar.sources=app \
-              -Dsonar.host.url=http://sonarqube:9000 \
-              -Dsonar.python.coverage.reportPaths=coverage.xml
-          '''
+    stage('SonarQube Analysis') {
+        steps {
+          withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+            sh '''
+              set -eux
+
+              # IMPORTANT: use the same Docker volume Jenkins uses for /var/jenkins_home
+              JENKINS_VOL=taskforge_jenkins_home
+
+              docker run --rm \
+                --network taskforge_default \
+                -e SONAR_TOKEN="$SONAR_TOKEN" \
+                -v ${JENKINS_VOL}:/var/jenkins_home \
+                -w /var/jenkins_home/workspace/TaskForge-CI \
+                sonarsource/sonar-scanner-cli \
+                -Dsonar.projectKey=taskforge \
+                -Dsonar.sources=app \
+                -Dsonar.host.url=http://sonarqube:9000 \
+                -Dsonar.python.coverage.reportPaths=coverage.xml
+            '''
+          }
         }
-      }
-   }
+    }
+
 
     stage('Quality Gate') {
       steps {
