@@ -15,40 +15,41 @@ pipeline {
     stage('Sonar Connectivity Check') {
       steps {
         sh '''
-          set -x
-          docker run --rm alpine sh -lc "
+          set -eux
+          docker run --rm --network taskforge_default alpine sh -lc "
             apk add --no-cache curl >/dev/null
             echo 'Hitting SonarQube...'
-            curl -s -o /dev/null -w 'HTTP=%{http_code}\\n' http://host.docker.internal:9000/api/system/status
+            curl -s -o /dev/null -w 'HTTP=%{http_code}\\n' http://sonarqube:9000/api/system/status
             echo
-            curl -s http://host.docker.internal:9000/api/system/status
+            curl -s http://sonarqube:9000/api/system/status
           "
         '''
       }
     }
-  
+
     stage('SonarQube Analysis') {
       steps {
-        withSonarQubeEnv('sonarqube-local') {
-          sh '''
-            docker run --rm \
-              --network taskforge_default \
-              -v "$PWD:/usr/src" \
-              sonarsource/sonar-scanner-cli \
-              -Dsonar.projectKey=taskforge \
-              -Dsonar.sources=app \
-              -Dsonar.python.coverage.reportPaths=coverage.xml
-          '''
-        }
+        sh '''
+          set -eux
+          docker run --rm \
+            --network taskforge_default \
+            -v "$PWD:/usr/src" \
+            -w /usr/src \
+            sonarsource/sonar-scanner-cli \
+            -Dsonar.projectKey=taskforge \
+            -Dsonar.sources=app \
+            -Dsonar.host.url=http://sonarqube:9000 \
+            -Dsonar.python.coverage.reportPaths=coverage.xml
+        '''
       }
     }
 
     stage('Quality Gate') {
-        steps {
-            timeout(time: 2, unit: 'MINUTES') {
-                waitForQualityGate abortPipeline: true
-            }
+      steps {
+        timeout(time: 5, unit: 'MINUTES') {
+          waitForQualityGate abortPipeline: true
         }
+      }
     }
 
     stage('Frontend Build') {
@@ -73,4 +74,3 @@ pipeline {
     }
   }
 }
-
