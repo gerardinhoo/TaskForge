@@ -32,6 +32,10 @@ pipeline {
         withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
           sh '''
             set -eux
+            echo "PWD=$PWD"
+            ls -la
+            test -d app
+            test -f coverage.xml
             docker run --rm \
               --network taskforge_default \
               -e SONAR_TOKEN="$SONAR_TOKEN" \
@@ -46,9 +50,6 @@ pipeline {
         }
       }
    }
-
-
-
 
     stage('Quality Gate') {
       steps {
