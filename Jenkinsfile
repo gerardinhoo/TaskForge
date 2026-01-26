@@ -42,7 +42,7 @@ pipeline {
                 -v ${JENKINS_VOL}:/var/jenkins_home \
                 -w /var/jenkins_home/workspace/TaskForge-CI \
                 sonarsource/sonar-scanner-cli \
-                -Dsonar.projectKey=taskforge \
+                -Dsonar.projectKey=taskforge_ci \
                 -Dsonar.sources=app \
                 -Dsonar.host.url=http://sonarqube:9000 \
                 -Dsonar.python.coverage.reportPaths=coverage.xml
