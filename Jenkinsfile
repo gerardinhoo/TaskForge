@@ -27,7 +27,7 @@ pipeline {
       }
     }
 
-    stage('SonarQube Analysis') {
+   stage('SonarQube Analysis') {
       steps {
         withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
           sh '''
@@ -41,12 +41,12 @@ pipeline {
               -Dsonar.projectKey=taskforge \
               -Dsonar.sources=app \
               -Dsonar.host.url=http://sonarqube:9000 \
-              -Dsonar.python.coverage.reportPaths=coverage.xml \
-              -Dsonar.login="$SONAR_TOKEN"
+              -Dsonar.python.coverage.reportPaths=coverage.xml
           '''
         }
       }
-    }
+   }
+
 
 
 
