@@ -27,22 +27,26 @@ pipeline {
       }
     }
 
-    stage('SonarQube Analysis') {
+   stage('SonarQube Analysis') {
       steps {
-        sh '''
-          set -eux
-          docker run --rm \
-            --network taskforge_default \
-            -v "$PWD:/usr/src" \
-            -w /usr/src \
-            sonarsource/sonar-scanner-cli \
-            -Dsonar.projectKey=taskforge \
-            -Dsonar.sources=app \
-            -Dsonar.host.url=http://sonarqube:9000 \
-            -Dsonar.python.coverage.reportPaths=coverage.xml
-        '''
+        withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+          sh '''
+            set -eux
+            docker run --rm \
+              --network taskforge_default \
+              -e SONAR_TOKEN="$SONAR_TOKEN" \
+              -v "$PWD:/usr/src" \
+              -w /usr/src \
+              sonarsource/sonar-scanner-cli \
+              -Dsonar.projectKey=taskforge \
+              -Dsonar.sources=app \
+              -Dsonar.host.url=http://sonarqube:9000 \
+              -Dsonar.python.coverage.reportPaths=coverage.xml
+          '''
+        }
       }
-    }
+}
+
 
     stage('Quality Gate') {
       steps {
