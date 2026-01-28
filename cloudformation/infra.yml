@@ -43,6 +43,13 @@ Parameters:
     Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
     Default: /aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64
 
+  EcrImageRetentionCount:
+    Type: Number
+    Default: 10
+    MinValue: 1
+    MaxValue: 100
+    Description: "How many images to keep in ECR (lifecycle policy)."
+
 Resources:
   VPC:
     Type: AWS::EC2::VPC
@@ -120,6 +127,39 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub "${ProjectName}-${Environment}-sg"
+  # ECR Repository
+  EcrRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: !Sub "${ProjectName}-${Environment}"
+      ImageScanningConfiguration:
+        ScanOnPush: true
+      EncryptionConfiguration:
+        EncryptionType: AES256
+      ImageTagMutability: MUTABLE
+      LifecyclePolicy:
+        LifecyclePolicyText: !Sub |
+          {
+            "rules": [
+              {
+                "rulePriority": 1,
+                "description": "Keep last ${EcrImageRetentionCount} images",
+                "selection": {
+                  "tagStatus": "any",
+                  "countType": "imageCountMoreThan",
+                  "countNumber": ${EcrImageRetentionCount}
+                },
+                "action": { "type": "expire" }
+              }
+            ]
+          }
+      Tags:
+        - Key: Name
+          Value: !Sub "${ProjectName}-${Environment}-ecr"
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: Environment
+          Value: !Ref Environment
 
   Ec2Role:
     Type: AWS::IAM::Role
@@ -216,6 +256,10 @@ Outputs:
     Description: "EC2 public DNS"
     Value: !GetAtt AppInstance.PublicDnsName
 
-  SshCommand:
-    Description: "SSH command (update key path)"
-    Value: !Sub "ssh -i <path-to-your-key>.pem ec2-user@${AppInstance.PublicDnsName}"
+  EcrRepositoryName:
+    Description: "ECR repository name"
+    Value: !Ref EcrRepository
+
+  EcrRepositoryUri:
+    Description: "ECR repository URI"
+    Value: !GetAtt EcrRepository.RepositoryUri
