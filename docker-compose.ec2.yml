@@ -12,7 +12,7 @@ services:
     image: ${ECR_URI}:${FRONTEND_TAG}
     container_name: taskforge-frontend
     ports:
-      - "3000:80"
+      - "80:80"
     environment:
       - NEXT_PUBLIC_API_URL=http://localhost
     restart: unless-stopped
