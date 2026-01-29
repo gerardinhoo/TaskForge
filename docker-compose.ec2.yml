@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: ${ECR_URI}:${FRONTEND_TAG}
+    image: ${ECR_URI}:frontend-v2
     container_name: taskforge-frontend
     ports:
       - "80:80"
