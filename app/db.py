@@ -1,33 +1,38 @@
 import os
-
-from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-load_dotenv()
-
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-if not DATABASE_URL:
-    raise RuntimeError("DATABASE_URL is not set. Please define it in your .env file.")
+engine = None
+SessionLocal = None
 
-engine = create_engine(
-    DATABASE_URL,
-    echo=True,
-    future=True,
-)
-
-SessionLocal = sessionmaker(
-    autocommit=False,
-    autoflush=False,
-    bind=engine,
-)
+if DATABASE_URL:
+    engine = create_engine(
+        DATABASE_URL,
+        pool_pre_ping=True,
+        future=True,
+    )
+    SessionLocal = sessionmaker(
+        autocommit=False,
+        autoflush=False,
+        bind=engine,
+        future=True,
+    )
 
 Base = declarative_base()
 
 
 def get_db():
-    from fastapi import Depends
+    """
+    Dependency used by FastAPI routes.
+
+    If DATABASE_URL is not set, this returns None to allow
+    health-only mode (Phase 4.1).
+    """
+    if SessionLocal is None:
+        return None
+
     db = SessionLocal()
     try:
         yield db
