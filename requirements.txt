@@ -6,3 +6,4 @@ python-dotenv
 pytest
 httpx
 pytest-cov
+psycopg2-binary==2.9.9
