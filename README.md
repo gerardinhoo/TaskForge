@@ -17,8 +17,8 @@ The project was built incrementally across multiple phases to reflect how produc
 - CI/CD: GitHub Actions
 - Observability: AWS CloudWatch
 
-<!-- **Screenshot placeholder:**
-`docs/screenshots/architecture-overview.png` -->
+**Screenshot placeholder:**
+`docs/screenshots/architecture-overview.png`
 
 ---
 
@@ -55,16 +55,15 @@ The project was built incrementally across multiple phases to reflect how produc
 - Multi-stage Docker builds
 - Docker Compose orchestration
 
-<!-- **Screenshot:**
-`docs/screenshots/docker-compose-local.png` -->
+**Screenshot:**
+`docs/screenshots/docker-compose-local.png`
 
 ### Phase 3 — CI/CD Pipelines
-- GitHub Actions for CI
 - Jenkins pipelines
 - Linting, testing, and build validation
-<!-- 
+
 **Screenshot:**
-`docs/screenshots/ci-pipeline-success.png` -->
+`docs/screenshots/ci-pipeline-success.png`
 
 ### Phase 4 — EC2 Deployment with ECR
 - CloudFormation-provisioned EC2
@@ -72,19 +71,19 @@ The project was built incrementally across multiple phases to reflect how produc
 - Containers deployed via Docker Compose
 - IAM roles and security groups configured
 
-<!-- **Screenshots:**
+**Screenshots:**
 - `docs/screenshots/cloudformation-stack.png`
 - `docs/screenshots/ecr-images.png`
-- `docs/screenshots/ec2-running-containers.png` -->
+- `docs/screenshots/ec2-running-containers.png`
 
 ### Phase 5 — SRE & Monitoring
 - CloudWatch Agent installed on EC2
 - CPU, memory, and disk metrics collected
 - Log ingestion validated
 
-<!-- **Screenshots:**
-- `docs/screenshots/cloudwatch-metrics.png`
-- `docs/screenshots/cloudwatch-logs.png` -->
+**Screenshots:**
+- `docs/screenshots/cloudwatch-mem-used-pct.png`
+- `docs/screenshots/ec2-cloudwatch-agent-running.png`
 
 ---
 
