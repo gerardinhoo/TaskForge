@@ -18,6 +18,7 @@ The project was built incrementally across multiple phases to reflect how produc
 - Observability: AWS CloudWatch
 
 **Architecture Overview:**
+
 ![Architecture Overview](docs/screenshots/architecture-overview.png)
 
 ---
@@ -56,6 +57,7 @@ The project was built incrementally across multiple phases to reflect how produc
 - Docker Compose orchestration
 
 **Docker Compose Local:**
+
 ![Docker Compose Local](docs/screenshots/docker-compose-local.png)
 
 ### Phase 3 — CI/CD Pipelines
@@ -63,6 +65,7 @@ The project was built incrementally across multiple phases to reflect how produc
 - Linting, testing, and build validation
 
 **CI Pipeline Success:**
+
 ![CI Pipeline Success](docs/screenshots/ci-pipeline-success.png)
 
 
@@ -72,7 +75,8 @@ The project was built incrementally across multiple phases to reflect how produc
 - Containers deployed via Docker Compose
 - IAM roles and security groups configured
 
-**CloudFormation Stack - ECR Images - EC2 Running Containers:**
+**CloudFormation Stack & ECR Images & EC2 Running Containers:**
+
 ![CloudFormation Stack](docs/screenshots/cloudformation-stack.png)
 ![ECR Images](docs/screenshots/ecr-images.png)
 ![EC2 Running Containers](docs/screenshots/ec2-running-containers.png)
@@ -84,6 +88,7 @@ The project was built incrementally across multiple phases to reflect how produc
 - Log ingestion validated
 
 **CloudWatch:**
+
 ![CloudWatch Mem Used](docs/screenshots/cloudwatch-mem-used-pct.png)
 ![CloudWatch Agent Running](docs/screenshots/ec2-cloudwatch-agent-running.png)
 
