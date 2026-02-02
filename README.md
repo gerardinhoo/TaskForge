@@ -146,5 +146,3 @@ docs/
 
 ---
 
-**Project complete — Phase 5 finalized.**
-
