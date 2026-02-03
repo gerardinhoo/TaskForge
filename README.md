@@ -96,8 +96,12 @@ The project was built incrementally across multiple phases to reflect how produc
 
 **CloudWatch:**
 
+#### CloudWatch Mem Used
+
 ![CloudWatch Mem Used](docs/screenshots/cloudwatch-mem-used-pct.png)
----
+
+#### CloudWatch Agent Running
+
 ![CloudWatch Agent Running](docs/screenshots/ec2-cloudwatch-agent-running.png)
 
 ---
