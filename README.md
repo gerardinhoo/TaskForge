@@ -77,10 +77,15 @@ The project was built incrementally across multiple phases to reflect how produc
 
 **CloudFormation Stack & ECR Images & EC2 Running Containers:**
 
+#### Cloud Formation Stack
 ![CloudFormation Stack](docs/screenshots/cloudformation-stack.png)
----
+
+#### ECR Images
+
 ![ECR Images](docs/screenshots/ecr-images.png)
----
+
+#### EC2 Running Container
+
 ![EC2 Running Containers](docs/screenshots/ec2-running-containers.png)
 
 
