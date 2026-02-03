@@ -78,9 +78,9 @@ The project was built incrementally across multiple phases to reflect how produc
 **CloudFormation Stack & ECR Images & EC2 Running Containers:**
 
 ![CloudFormation Stack](docs/screenshots/cloudformation-stack.png)
-
+---
 ![ECR Images](docs/screenshots/ecr-images.png)
-
+---
 ![EC2 Running Containers](docs/screenshots/ec2-running-containers.png)
 
 
@@ -92,7 +92,7 @@ The project was built incrementally across multiple phases to reflect how produc
 **CloudWatch:**
 
 ![CloudWatch Mem Used](docs/screenshots/cloudwatch-mem-used-pct.png)
-
+---
 ![CloudWatch Agent Running](docs/screenshots/ec2-cloudwatch-agent-running.png)
 
 ---
