@@ -33,7 +33,6 @@ Full AWS DevOps platform for a containerized full-stack application — CloudFor
 - AWS CloudFormation
 - AWS IAM
 - Docker & Docker Compose
-- GitHub Actions
 - Jenkins
 
 ### SRE / Monitoring
