@@ -1,10 +1,8 @@
-# TaskForge — Cloud, DevOps & SRE Portfolio Project
+# TaskForge — AWS DevOps Platform with SRE Observability
 
 ## Overview
 
-**TaskForge** is a full-stack application used as a hands-on portfolio project to demonstrate real-world **Cloud**, **DevOps**, **CI/CD**, and **Site Reliability Engineering (SRE)** practices on AWS.
-
-The project was built incrementally across multiple phases to reflect how production systems evolve over time, focusing on practical engineering decisions, infrastructure automation, and operational readiness.
+Full AWS DevOps platform for a containerized full-stack application — CloudFormation for infrastructure provisioning, Jenkins CI for automated Docker builds and tests, ECR for image storage, EC2 for container deployment, and CloudWatch for host-level observability. Built incrementally to reflect how production systems evolve from local development to a fully automated, observable cloud environment.
 
 ---
 
@@ -126,41 +124,16 @@ The project was built incrementally across multiple phases to reflect how produc
 
 ---
 
-## Portfolio Talking Points
+## Technologies
 
-- Infrastructure as Code (CloudFormation)
-- CI/CD pipeline safety
-- Secure container image handling
-- AWS IAM role-based access
-- SRE fundamentals with CloudWatch
-- Pragmatic engineering tradeoffs
-
----
-
-## Future Enhancements
-
-- ECS or EKS migration
-- Application Load Balancer
-- Blue/green deployments
-- Centralized logging
-- Distributed tracing
+- **AWS** — EC2, ECR, CloudFormation, IAM, CloudWatch
+- **Docker** — Multi-stage builds, Docker Compose
+- **Jenkins** — CI pipelines with linting, testing, and build validation
+- **GitHub Actions** — Additional CI/CD workflows
+- **Python / FastAPI** — Backend API
+- **JavaScript / Vite** — Frontend application
 
 ---
 
-## Screenshot Directory Structure
-
-```
-docs/
-└── screenshots/
-    ├── architecture-overview.png
-    ├── docker-compose-local.png
-    ├── ci-pipeline-success.png
-    ├── cloudformation-stack.png
-    ├── ecr-images.png
-    ├── ec2-running-containers.png
-    ├── cloudwatch-mem-used-pct.png.png
-    └── ec2-cloudwatch-agent-running.png
-```
-
----
+**Author:** [Gerard Eklu](https://github.com/gerardinhoo)
 
